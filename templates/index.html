@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Klasifikasi Jenis Pakaian - Xception</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <!-- ============================ NAVBAR ============================ -->
+    <nav class="navbar navbar-expand-lg navbar-dark app-navbar shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="{{ url_for('index') }}">
+                <i class="bi bi-bag-check-fill me-2"></i>ClothVision
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ url_for('index') }}"><i class="bi bi-house-door me-1"></i>Beranda</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('about') }}"><i class="bi bi-info-circle me-1"></i>Tentang</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ============================ HERO SECTION ============================ -->
+    <header class="app-hero text-white text-center py-5">
+        <div class="container">
+            <h1 class="fw-bold display-6">
+                <i class="bi bi-camera-fill me-2"></i>
+                Klasifikasi Jenis Pakaian
+            </h1>
+            <p class="lead mb-0">
+                Menggunakan Transfer Learning Xception Berbasis Web dengan Flask
+            </p>
+        </div>
+    </header>
+
+    <!-- ============================ MAIN CONTENT ============================ -->
+    <main class="container py-5">
+
+        <!-- Flash messages (alert Bootstrap) -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show shadow-sm" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% if not model_loaded %}
+        <div class="alert alert-warning shadow-sm">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            Model belum ditemukan. Silakan jalankan <code>train.py</code> terlebih dahulu
+            sebelum melakukan prediksi.
+        </div>
+        {% endif %}
+
+        <div class="row justify-content-center">
+            <div class="col-lg-7">
+                <div class="card shadow-sm border-0 app-card">
+                    <div class="card-body p-4">
+                        <h4 class="card-title mb-1 fw-bold text-primary">
+                            <i class="bi bi-cloud-upload-fill me-2"></i>Upload Gambar Pakaian
+                        </h4>
+                        <p class="text-muted mb-4">
+                            Unggah gambar pakaian (dress, hat, longsleeve, outwear, pants,
+                            shirt, shoes, shorts, skirt, t-shirt) untuk diklasifikasikan
+                            oleh model Xception. Maksimum ukuran file 5 MB.
+                        </p>
+
+                        <form action="{{ url_for('predict') }}" method="POST" enctype="multipart/form-data" id="uploadForm">
+                            <div class="mb-3">
+                                <label for="imageInput" class="form-label fw-semibold">Pilih Gambar</label>
+                                <input class="form-control" type="file" id="imageInput" name="image"
+                                       accept="image/png, image/jpeg, image/jpg, image/bmp, image/webp" required>
+                                <div class="form-text">
+                                    <i class="bi bi-info-circle me-1"></i>Format: JPG, JPEG, PNG, BMP, WEBP. Maks. 5 MB.
+                                </div>
+                            </div>
+
+                            <!-- Preview Gambar -->
+                            <div class="text-center mb-4 d-none" id="previewContainer">
+                                <img id="previewImage" src="#" alt="Preview Gambar"
+                                     class="img-fluid rounded shadow-sm preview-img">
+                            </div>
+
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary btn-lg app-btn" id="predictBtn" {% if not model_loaded %}disabled{% endif %}>
+                                    <i class="bi bi-magic me-2"></i>Prediksi Sekarang
+                                </button>
+                            </div>
+                        </form>
+
+                        <!-- Progress loading saat prediksi -->
+                        <div class="mt-4 d-none" id="loadingContainer">
+                            <div class="d-flex align-items-center justify-content-center mb-2">
+                                <div class="spinner-border text-primary me-2" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <span class="fw-semibold text-primary">Model sedang menganalisis gambar ...</span>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary"
+                                     role="progressbar" style="width: 100%"></div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Info kelas -->
+                <div class="card shadow-sm border-0 app-card mt-4">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold text-secondary mb-3">
+                            <i class="bi bi-tags-fill me-2"></i>10 Kelas Pakaian yang Didukung
+                        </h5>
+                        <div class="d-flex flex-wrap gap-2">
+                            <span class="badge rounded-pill class-badge">Dress</span>
+                            <span class="badge rounded-pill class-badge">Hat</span>
+                            <span class="badge rounded-pill class-badge">Longsleeve</span>
+                            <span class="badge rounded-pill class-badge">Outwear</span>
+                            <span class="badge rounded-pill class-badge">Pants</span>
+                            <span class="badge rounded-pill class-badge">Shirt</span>
+                            <span class="badge rounded-pill class-badge">Shoes</span>
+                            <span class="badge rounded-pill class-badge">Shorts</span>
+                            <span class="badge rounded-pill class-badge">Skirt</span>
+                            <span class="badge rounded-pill class-badge">T-Shirt</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ============================ FOOTER ============================ -->
+    <footer class="app-footer text-center py-4 mt-auto">
+        <div class="container">
+            <p class="mb-0 text-muted">
+                &copy; 2026 ClothVision — Tugas 12 Praktikum Sistem Multimedia
+            </p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

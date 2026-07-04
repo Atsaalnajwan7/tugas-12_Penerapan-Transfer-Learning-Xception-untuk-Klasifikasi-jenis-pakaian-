@@ -1,0 +1,120 @@
+/* ==================================================================================
+   style.css
+   Tema modern - Warna dominan: Putih, Biru, Abu-abu
+================================================================================== */
+
+:root {
+    --primary-blue: #2563eb;
+    --dark-blue: #1e40af;
+    --light-gray: #f1f5f9;
+    --medium-gray: #64748b;
+    --white: #ffffff;
+}
+
+body {
+    background-color: var(--light-gray);
+    font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+    color: #1f2937;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1;
+}
+
+/* ---------- NAVBAR ---------- */
+.app-navbar {
+    background: linear-gradient(90deg, var(--dark-blue), var(--primary-blue));
+}
+
+.app-navbar .nav-link {
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.app-navbar .nav-link:hover,
+.app-navbar .nav-link.active {
+    color: #cfe2ff !important;
+}
+
+/* ---------- HERO ---------- */
+.app-hero {
+    background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue));
+}
+
+/* ---------- CARD ---------- */
+.app-card {
+    background-color: var(--white);
+    border-radius: 16px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.app-card:hover {
+    transform: translateY(-2px);
+}
+
+/* ---------- BUTTON ---------- */
+.app-btn {
+    border-radius: 10px;
+    font-weight: 600;
+    padding: 0.7rem 1.5rem;
+}
+
+.btn-primary.app-btn {
+    background-color: var(--primary-blue);
+    border-color: var(--primary-blue);
+}
+
+.btn-primary.app-btn:hover {
+    background-color: var(--dark-blue);
+    border-color: var(--dark-blue);
+}
+
+/* ---------- BADGE KELAS ---------- */
+.class-badge {
+    background-color: var(--light-gray);
+    color: var(--dark-blue);
+    border: 1px solid #cbd5e1;
+    font-weight: 500;
+    padding: 0.55rem 1rem;
+}
+
+.result-badge {
+    background-color: var(--primary-blue);
+    color: var(--white);
+    border-radius: 50px;
+    letter-spacing: 1px;
+}
+
+/* ---------- PREVIEW & RESULT IMAGE ---------- */
+.preview-img,
+.result-img {
+    max-height: 380px;
+    object-fit: contain;
+    border: 1px solid #e2e8f0;
+    background-color: var(--light-gray);
+    padding: 8px;
+}
+
+/* ---------- FOOTER ---------- */
+.app-footer {
+    background-color: var(--white);
+    border-top: 1px solid #e2e8f0;
+}
+
+/* ---------- PROGRESS BAR ---------- */
+.progress {
+    border-radius: 50px;
+    background-color: #e2e8f0;
+}
+
+/* ---------- SCROLLBAR (opsional, estetika) ---------- */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-thumb {
+    background-color: var(--medium-gray);
+    border-radius: 4px;
+}

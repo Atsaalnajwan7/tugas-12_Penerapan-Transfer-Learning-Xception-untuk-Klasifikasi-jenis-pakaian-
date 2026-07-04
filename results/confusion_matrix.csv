@@ -1,0 +1,11 @@
+,dress,hat,longsleeve,outwear,pants,shirt,shoes,shorts,skirt,t-shirt
+dress,9,0,2,0,0,0,0,0,2,2
+hat,1,11,0,0,0,0,0,0,0,0
+longsleeve,0,0,58,5,0,3,0,0,0,6
+outwear,1,0,5,28,1,2,0,1,0,0
+pants,0,0,0,0,42,0,0,0,0,0
+shirt,0,0,11,5,0,10,0,0,0,0
+shoes,0,1,0,0,0,0,72,0,0,0
+shorts,0,0,0,0,6,0,0,24,0,0
+skirt,0,0,0,0,0,0,0,1,11,0
+t-shirt,0,0,2,0,0,0,0,0,0,50

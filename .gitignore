@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# Dataset & hasil split otomatis
+dataset/
+dataset_split/
+
+# Upload gambar dari user
+static/uploads/*
+!static/uploads/.gitkeep
+
+# Model & hasil training (opsional: uncomment jika tidak ingin commit model besar)
+# model/*.keras
+# model/*.pkl
+
+# Hasil evaluasi (opsional)
+# results/*
+
+# OS / Editor
+.DS_Store
+.vscode/
+.idea/
+
+# Logs
+*.log
